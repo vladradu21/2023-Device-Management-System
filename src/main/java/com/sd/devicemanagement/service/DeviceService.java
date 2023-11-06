@@ -1,11 +1,13 @@
 package com.sd.devicemanagement.service;
 
 import com.sd.devicemanagement.dto.DeviceDTO;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Transactional
 public interface DeviceService {
     DeviceDTO save(DeviceDTO deviceDTO, String username);
 

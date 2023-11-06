@@ -9,9 +9,10 @@ spring:
     name: device-management
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/devicedb
-    username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:admin}
+    url: jdbc:mysql://${DB_IP:localhost}:3306/devicedb
+    username: root
+    password: admin
   jpa:
     hibernate:
       ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQLDialect

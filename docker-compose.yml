@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  devicedb:
+    image: mysql
+    container_name: db-device
+    restart: on-failure
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_DATABASE: devicedb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: admin
+    networks:
+      - ems-network
+
+  device-app:
+    hostname: device-management
+    restart: on-failure
+    depends_on:
+      - devicedb
+    image: device-management-app
+    container_name: device-management-container
+    build: .
+    ports:
+      - "8001:8081"
+    environment:
+      - DB_IP=devicedb
+      - DB_NAME=devicedb
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=password
+    networks:
+      - ems-network
+
+networks:
+  ems-network:
+    external: true
