@@ -44,6 +44,8 @@ public class DeviceServiceImpl implements DeviceService {
         Device deviceToSave = deviceMapper.toEntity(deviceDTO);
         deviceToSave.setUser(existingUser);
         Device savedDevice = deviceRepository.save(deviceToSave);
+
+        kafkaTemplate.send("device", new DeviceUpdateDTO(username, deviceDTO.name(), deviceDTO.maxConsumption()));
         return deviceMapper.toDTO(savedDevice);
     }
 
