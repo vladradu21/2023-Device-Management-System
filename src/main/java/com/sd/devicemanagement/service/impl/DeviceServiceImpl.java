@@ -1,6 +1,7 @@
 package com.sd.devicemanagement.service.impl;
 
 import com.sd.devicemanagement.dto.DeviceDTO;
+import com.sd.devicemanagement.dto.DeviceUpdateDTO;
 import com.sd.devicemanagement.exceptions.DmConflictException;
 import com.sd.devicemanagement.exceptions.DmNotFoundException;
 import com.sd.devicemanagement.mapper.DeviceMapper;
@@ -11,6 +12,7 @@ import com.sd.devicemanagement.repository.UserRepository;
 import com.sd.devicemanagement.service.DeviceService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,16 +20,16 @@ import java.util.List;
 @Service
 public class DeviceServiceImpl implements DeviceService {
     private final DeviceRepository deviceRepository;
-
     private final DeviceMapper deviceMapper;
-
     private final UserRepository userRepository;
+    private final KafkaTemplate<String, DeviceUpdateDTO> kafkaTemplate;
 
     @Autowired
-    public DeviceServiceImpl(DeviceRepository deviceRepository, DeviceMapper deviceMapper, UserRepository userRepository) {
+    public DeviceServiceImpl(DeviceRepository deviceRepository, DeviceMapper deviceMapper, UserRepository userRepository, KafkaTemplate<String, DeviceUpdateDTO> kafkaTemplate) {
         this.deviceRepository = deviceRepository;
         this.deviceMapper = deviceMapper;
         this.userRepository = userRepository;
+        this.kafkaTemplate = kafkaTemplate;
     }
 
     @Override
@@ -64,12 +66,16 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Override
     public void update(DeviceDTO deviceDTO, String username) {
-        deviceRepository.findByNameAndUserUsername(deviceDTO.name(), username).ifPresent(device -> {
+        deviceRepository.findByNameAndUserUsername(deviceDTO.name(), username).ifPresentOrElse(device -> {
             device.setDescription(deviceDTO.description());
             device.setAddress(deviceDTO.address());
             device.setMaxConsumption(deviceDTO.maxConsumption());
             deviceRepository.save(device);
+        }, () -> {
+            throw new DmNotFoundException("Device not found for name: " + deviceDTO.name() + " and username: " + username);
         });
+
+        kafkaTemplate.send("device", new DeviceUpdateDTO(username, deviceDTO.name(), deviceDTO.maxConsumption()));
     }
 
     @Override
