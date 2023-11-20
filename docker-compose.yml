@@ -27,9 +27,6 @@ services:
       - "8001:8081"
     environment:
       - DB_IP=devicedb
-      - DB_NAME=devicedb
-      - MYSQL_USER=user
-      - MYSQL_PASSWORD=password
     networks:
       - ems-network
 
