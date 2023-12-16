@@ -27,6 +27,8 @@ services:
       - "8001:8081"
     environment:
       - DB_IP=devicedb
+      - USER_PORT=8080
+      - USER_HOST=user-management
     networks:
       - ems-network
 
