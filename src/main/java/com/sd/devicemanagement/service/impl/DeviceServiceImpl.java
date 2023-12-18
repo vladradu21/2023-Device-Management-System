@@ -84,5 +84,6 @@ public class DeviceServiceImpl implements DeviceService {
     @Transactional
     public void delete(String name, String username) {
         deviceRepository.deleteByNameAndUserUsername(name, username);
+        kafkaTemplate.send("deleteDevice", new DeviceUpdateDTO(username, name, 0));
     }
 }

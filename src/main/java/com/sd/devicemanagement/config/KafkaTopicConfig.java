@@ -12,4 +12,10 @@ public class KafkaTopicConfig {
         return TopicBuilder.name("device")
                 .build();
     }
+
+    @Bean
+    public NewTopic deleteDeviceTopic() {
+        return TopicBuilder.name("deleteDevice")
+                .build();
+    }
 }
