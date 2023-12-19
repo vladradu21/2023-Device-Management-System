@@ -1,3 +1,6 @@
 # 2023-Device-Management-System
-device management microservice
-![image](https://github.com/vladradu21/2023-Device-Management-System/assets/117584846/3224fbfe-f402-472b-b31a-ad93d40dd75c)
+
+<h4>Utilizing webclient for synchronous connection, the device-management microservice manages CRUD operations for devices by interfacing with the user-management-microservice.</h4>
+
+![Screenshot 2023-12-19 162520](https://github.com/vladradu21/2023-Device-Management-System/assets/117584846/7e1f1623-42c1-4687-b7d9-d0d7a9a10d7d)
+
